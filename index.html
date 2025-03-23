@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="container">
+
+        <div id="loginSection">
+            <h2>Login to Chat</h2>
+            <button id="loginBtn">Login with Google</button>
+        </div>
+
+        <!-- Search Users Section -->
+        <div id="searchSection">
+            <h2>Search for a User</h2>
+            <input type="text" id="searchUser" placeholder="Enter username...">
+            <button id="searchBtn">Search</button>
+            <div id="userList"></div>
+        </div>
+
+        <!-- Chat Section -->
+        <div id="chatSection">
+            <h2>Chat Room</h2>
+            <div id="chatMessages"></div>
+            <input type="text" id="messageInput" placeholder="Type a message">
+            <button id="sendMessage">Send</button>
+        </div>
+
+    </div>
+
+    <!-- Firebase App (Core) -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
+    <script src="script.js"></script>
+    <script type="module" src="script.mjs"></script>
+
+
+</body>
+</html>
+
