@@ -112,11 +112,15 @@ function loadMessages() {
 
 // Show Sections
 function showSection(sectionId) {
-    document.getElementById('loginSection').style.display = 'none';
-    document.getElementById('searchSection').style.display = 'none';
-    document.getElementById('chatSection').style.display = 'none';
-    document.getElementById(sectionId).style.display = 'block';
+    // Hide all sections
+    document.querySelectorAll(".section").forEach(section => {
+        section.style.display = "none";
+    });
+
+    // Show the requested section
+    document.getElementById(sectionId).style.display = "block";
 }
+
 
 document.addEventListener("DOMContentLoaded", () => {
     showSection('loginSection'); // Ensure login is visible on page load
@@ -129,12 +133,15 @@ document.getElementById("loginBtn").addEventListener("click", function() {
     .then((result) => {
         console.log("User signed in:", result.user);
         alert("Login successful!");
-        showSection('searchSection'); // Redirect to search section
+
+        // Show the search section after login
+        showSection('searchSection'); 
     })
     .catch((error) => {
         console.error("Login Error:", error.message);
         alert("Login failed: " + error.message);
     });
 });
+
 
 
