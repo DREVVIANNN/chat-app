@@ -90,6 +90,44 @@ async function sendMessage() {
     }
 }
 
+function sendMessage(receiverId, message) {
+    const user = firebase.auth().currentUser;
+    if (!user) return alert("Please log in first!");
+
+    firebase.firestore().collection("messages").add({
+        sender: user.uid,
+        receiver: receiverId,
+        message: message,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    })
+    .then(() => {
+        console.log("Message sent!");
+    })
+    .catch(error => {
+        console.error("Error sending message:", error);
+    });
+}
+
+
+function searchUser(username) {
+    firebase.firestore().collection("users")
+    .where("name", "==", username)
+    .get()
+    .then(querySnapshot => {
+        if (querySnapshot.empty) {
+            alert("User not found!");
+        } else {
+            querySnapshot.forEach(doc => {
+                console.log("User found:", doc.data());
+            });
+        }
+    })
+    .catch(error => {
+        console.error("Error searching user:", error);
+    });
+}
+
+
 // Load Messages
 function loadMessages() {
     let chatMessages = document.getElementById('chatMessages');
@@ -110,7 +148,7 @@ function loadMessages() {
     });
 }
 
-// Show Sections
+// Function to show/hide sections
 function showSection(sectionId) {
     // Hide all sections
     document.querySelectorAll(".section").forEach(section => {
@@ -131,10 +169,19 @@ document.getElementById("loginBtn").addEventListener("click", function() {
     
     auth.signInWithPopup(provider)
     .then((result) => {
-        console.log("User signed in:", result.user);
-        alert("Login successful!");
+        const user = result.user;
+        console.log("User signed in:", user);
+        
+        // Save user data to Firestore
+        const userRef = firebase.firestore().collection("users").doc(user.uid);
+        userRef.set({
+            uid: user.uid,
+            name: user.displayName,
+            email: user.email,
+            profilePic: user.photoURL
+        }, { merge: true }); // Merge to prevent overwriting existing data
 
-        // Show the search section after login
+        alert("Login successful!");
         showSection('searchSection'); 
     })
     .catch((error) => {
@@ -142,6 +189,33 @@ document.getElementById("loginBtn").addEventListener("click", function() {
         alert("Login failed: " + error.message);
     });
 });
+
+
+window.onload = function() {
+    function showSection(sectionId) {
+        document.querySelectorAll(".section").forEach(section => {
+            section.style.display = "none";
+        });
+        document.getElementById(sectionId).style.display = "block";
+    }
+
+    document.getElementById("loginBtn").addEventListener("click", function() {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        
+        auth.signInWithPopup(provider)
+        .then((result) => {
+            console.log("User signed in:", result.user);
+            alert("Login successful!");
+
+            showSection('searchSection'); // Ensure this works
+        })
+        .catch((error) => {
+            console.error("Login Error:", error.message);
+            alert("Login failed: " + error.message);
+        });
+    });
+};
+
 
 
 
