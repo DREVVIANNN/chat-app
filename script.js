@@ -13,10 +13,10 @@ const firebaseConfig = {
     appId: "1:187148667173:web:72688c1b31ac95a88172cc"
   };
   // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-const provider = new GoogleAuthProvider();
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const provider = new GoogleAuthProvider();
 
 let currentUser, chatWith;
 
@@ -148,46 +148,59 @@ function loadMessages() {
     });
 }
 
-function showSection(sectionId) {
-    // Hide all sections
-    document.querySelectorAll(".section").forEach(section => {
-        section.style.display = "none";
+// ✅ Make sure Firebase SDK is included in your HTML before this script
+document.addEventListener("DOMContentLoaded", function() {
+    console.log("Page loaded, initializing script...");
+
+    function showSection(sectionId) {
+        console.log("Switching to section:", sectionId);
+        document.querySelectorAll(".section").forEach(section => {
+            section.style.display = "none";
+        });
+        document.getElementById(sectionId).style.display = "block";
+    }
+
+    // Firebase Configuration (Replace with your actual Firebase details)
+    const firebaseConfig = {
+        apiKey: "AIzaSyDIS0NT8DN6FDV-lSQnmGmnO999sQl5kbg",
+        authDomain: "chat-app-2d518.firebaseapp.com",
+        projectId: "chat-app-2d518",
+        storageBucket: "chat-app-2d518.firebasestorage.app",
+        messagingSenderId: "187148667173",
+        appId: "1:187148667173:web:72688c1b31ac95a88172cc"
+    };
+
+    // ✅ Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    document.getElementById("loginBtn").addEventListener("click", function() {
+        console.log("Login button clicked!");
+        const provider = new firebase.auth.GoogleAuthProvider();
+
+        auth.signInWithPopup(provider)
+        .then((result) => {
+            const user = result.user;
+            console.log("User signed in:", user);
+
+            // ✅ Save user info in Firestore
+            db.collection("users").doc(user.uid).set({
+                uid: user.uid,
+                name: user.displayName,
+                email: user.email,
+                profilePic: user.photoURL
+            }, { merge: true });
+
+            alert("Login successful!");
+            showSection("searchSection"); // ✅ Ensure section exists
+        })
+        .catch((error) => {
+            console.error("Login Error:", error.message);
+            alert("Login failed: " + error.message);
+        });
     });
 
-    // Show the requested section
-    document.getElementById(sectionId).style.display = "block";
-}
-
-
-
-document.addEventListener("DOMContentLoaded", () => {
-    showSection('loginSection'); // Ensure login is visible on page load
-});
-
-document.getElementById("loginBtn").addEventListener("click", function() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    
-    auth.signInWithPopup(provider)
-    .then((result) => {
-        const user = result.user;
-        console.log("User signed in:", user);
-        
-        // Save user data to Firestore
-        const userRef = firebase.firestore().collection("users").doc(user.uid);
-        userRef.set({
-            uid: user.uid,
-            name: user.displayName,
-            email: user.email,
-            profilePic: user.photoURL
-        }, { merge: true }); // Merge to prevent overwriting existing data
-
-        alert("Login successful!");
-        showSection('searchSection'); 
-    })
-    .catch((error) => {
-        console.error("Login Error:", error.message);
-        alert("Login failed: " + error.message);
-    });
 });
 
 
