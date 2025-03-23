@@ -148,7 +148,6 @@ function loadMessages() {
     });
 }
 
-// Function to show/hide sections
 function showSection(sectionId) {
     // Hide all sections
     document.querySelectorAll(".section").forEach(section => {
@@ -158,6 +157,7 @@ function showSection(sectionId) {
     // Show the requested section
     document.getElementById(sectionId).style.display = "block";
 }
+
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -207,7 +207,7 @@ window.onload = function() {
             console.log("User signed in:", result.user);
             alert("Login successful!");
 
-            showSection('searchSection'); // Ensure this works
+            showSection('searchSection'); // ✅ Ensure function is available
         })
         .catch((error) => {
             console.error("Login Error:", error.message);
@@ -215,6 +215,7 @@ window.onload = function() {
         });
     });
 };
+
 
 
 
